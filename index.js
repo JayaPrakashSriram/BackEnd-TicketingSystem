@@ -1,11 +1,18 @@
 // const express = require('express');  // "type": "commonjs"
 import express from "express";          // "type": "module"
 import {MongoClient} from "mongodb";
+import * as dotenv from 'dotenv'
+dotenv.config();
 
 const app = express();
 const PORT = 4000;
 
-const MONGO_URL = "mongodb://127.0.0.1";
+// Below linking in the variable MONGO_URL, used get the data from Compass
+// const MONGO_URL = "mongodb://127.0.0.1"; 
+
+// Below linking in the variable MONGO_URL, used get the data from Atlas
+const MONGO_URL = process.env.MONGO_URL
+
 const client = new MongoClient(MONGO_URL);   // -> dial
   // Top level await - A Await which is not inside the funtion is called as top level await.
 await client.connect();                      // -> call
