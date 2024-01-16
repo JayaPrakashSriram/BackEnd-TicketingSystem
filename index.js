@@ -100,27 +100,11 @@ app.get("/", function (request, response){
 //     "Time": "01:29:15"
 //   }
 // ];
+
 app.get("/Queries", async function (request, response){
   const QueriesDetails = await client.db('HelpDesk').collection('Queries').find({}).toArray();
   console.log(QueriesDetails);
   response.send(QueriesDetails);
-});
-
-app.get("/Queries/:param", async function (request, response){
-  const param = request.params.param;
-  console.log(param);
-
-  // In this code, isNaN(param) checks whether the parameter is a number. If it is a number, it is treated
-  //   as a QueryNo; otherwise, it is treated as a username. This way, single route can be used to handle
-  //   both cases dynamically. If the parameter is a QueryNo, it retrieves the single document, and if it's
-  //   a username, it retrieves an array of documents.
-  if (!isNaN(param)) {
-    const Qno = await client.db('HelpDesk').collection('Queries').findOne({ QueryNo: param });
-    Qno ? response.send(Qno) : response.status(404).send({ message: 'QueryNo not found' });
-  } else {
-    const QuserName = await client.db('HelpDesk').collection('Queries').find({ username: param }).toArray();
-    QuserName.length > 0 ? response.send(QuserName) : response.status(404).send({ message: 'UserName not found' });
-  }
 });
 
 // app.get("/Queries/:username", async function (request, response){
@@ -139,6 +123,32 @@ app.get("/Queries/:param", async function (request, response){
 //   console.log(Qno);
 //   Qno ? response.send(Qno) : response.send({message : 'QueryNo not found'});
 // });
+
+app.get("/Queries/:param", async function (request, response){
+  const param = request.params.param;
+  console.log(param);
+
+  // In this code, isNaN(param) checks whether the parameter is a number. If it is a number, it is treated
+  //   as a QueryNo; otherwise, it is treated as a username. This way, single route can be used to handle
+  //   both cases dynamically. If the parameter is a QueryNo, it retrieves the single document, and if it's
+  //   a username, it retrieves an array of documents.
+  if (!isNaN(param)) {
+    const Qno = await client.db('HelpDesk').collection('Queries').findOne({ QueryNo: param });
+    Qno ? response.send(Qno) : response.status(404).send({ message: 'QueryNo not found' });
+  } else {
+    const QuserName = await client.db('HelpDesk').collection('Queries').find({ username: param }).toArray();
+    QuserName.length > 0 ? response.send(QuserName) : response.status(404).send({ message: 'UserName not found' });
+  }
+});
+
+app.post("/Queries", express.json(), async function (request,response){
+  const Qdata = request.body;
+  console.log(Qdata);
+  //db.movies.insertMany(data)
+  const result = await client.db("HelpDesk").collection("Queries").insertMany(Qdata);
+  result ? response.send(result) : response.status(404).send({ message:'Data not found' });
+  console.log(result);
+});
 
 app.listen(PORT, () => {
   console.log(`SERVER IS RUNNING IN: ${PORT}`)
