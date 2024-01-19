@@ -157,6 +157,16 @@ app.post("/Queries", express.json(), async function (request,response){
   console.log(result);
 });
 
+app.delete("/Queries/:QueryNo", async function (request, response){   
+  const DeleteQuery = request.params
+  console.log(DeleteQuery)
+  // db.movies.deleteOne({id:"1000"})                           
+  const result = await client.db("HelpDesk").collection("Queries").deleteOne({QueryNo:DeleteQuery});
+  console.log(result);
+  result ? response.send(result) : response.status(404).send({message:"Movie not found"});
+  }
+);
+
 app.listen(PORT, () => {
   console.log(`SERVER IS RUNNING IN: ${PORT}`)
 });
